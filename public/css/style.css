@@ -44,12 +44,12 @@ body {
 #about-window {
   position: fixed;
   width: 80%;
-  height: 80%;
+  height: 90%;
   left: 50%;
   transform: translateX(-50%);
   background: #F8FDFF;
   z-index: 3;
-  top: 20px;
+  top: 5%;
   border-radius: 10px;
 }
 
