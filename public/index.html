@@ -1,0 +1,131 @@
+<head>
+  <meta charset="UTF-8">
+  <script src='https://cdn.socket.io/socket.io-1.4.5.js'></script>
+  <script language="javascript" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="css/game.css">
+  <link href="https://fonts.googleapis.com/css?family=Changa:300" rel="stylesheet"> 
+</head>
+
+<body>
+  <span id='server-stats' style='display: none'></span>
+  <button id='about-button'>About</button>
+  <div id = 'about-window' style="display:none">
+    <h2>Codenames.plus by Joe Marchesi</h3>
+    <a target='_blank' href="https://twitter.com/J0ooop">Follow me on Twitter @j0ooop</a>
+    <a target='_blank' href="https://joemar.me">Visit my Site: joemar.me</a>
+    <a target='_blank' href=''>View Source Code</a>
+    <br>
+    <h3>How To Play</h4>
+    <ul>
+      <li><i>TLDR; In Codenames, two teams compete to see who can make contact with all of their agents first. Spymasters give one-word clues that can point to multiple words on the board. The spymaster also gives a number that corresponds to the number of words that clue applies to (Example: "Animal 3"). Their teammates try to guess words of the right color while avoiding those that belong to the opposing team. You are allowed to guess n + 1 times where n is the number the spymaster gives. Everyone wants to avoid the assassin. <span style='font-size: 10px'>No laming.</span></i></li>
+      <br>
+      <li>Codenames is a game of guessing which code names (words) in a set are related to a hint-word given by another player.</li>
+      <li>Players split into two teams: red and blue. One player of each team is selected as the team's spymaster; the others are field operatives (Guessers).</li>
+      <li>Twenty-five code name cards, each bearing a word, are laid out in a 5×5 rectangular grid, in random order. A number of these words represent red agents, a number represent blue agents, one represents an assassin, and the others represent innocent bystanders.</li>
+      <li>The teams' spymasters are shown the 5×5 grid of 25 words with various colors, each corresponding to one of the code name cards on the table. Teams take turns. On each turn, the appropriate spymaster gives a verbal hint about the words on the respective cards. <b>Each hint may only consist of one single word and a number.</b> The spymaster gives a hint that is related to as many of the words on his/her own agents' cards as possible, but not to any others – lest they accidentally lead their team to choose a card representing an innocent bystander, a friendly agent, or the assassin. </li>
+      <li>The hint's word can be chosen freely, <b>as long as it is not (and does not contain) any of the words on the code name cards still showing at that time.</b> Code name cards are covered as guesses are made. </li>
+      <li>The hint's number tells the field operatives how many words in the grid are related to the word of the clue. <b>It also determines the maximum number of guesses the field operatives may make on that turn, which is the hint's number plus one.</b> Field operatives must make at least one guess per turn, risking a wrong guess and its consequences. They may also end their turn voluntarily at any point thereafter. </li>
+      <li>After a spymaster gives the hint with its word and number, their field operatives make guesses about which code name cards bear words related to the hint and point them out, one at a time. When a code name card is pointed out, the card reveals its color – blue agent, red agent, tan bystander, or the black assassin. If the assassin is pointed out, the game ends immediately, with the team who identified him losing. If an agent of the other team is pointed out, the turn ends immediately, and that other team is also one agent closer to winning. If an innocent bystander is pointed out, the turn simply ends. </li>
+      <li>The game ends when all of one team's agents are identified (winning the game for that team),[3] or when one team has identified the assassin (losing the game). </li>
+    </ul>
+  </div>
+  <div id="join-game">
+    <h1>Codenames.plus</h1>
+    <div class='join-input'>
+      <label for='join-nickname'>Nickname: </label>
+      <input id='join-nickname' type='text' maxlength="10"></input>
+    </div>
+    <div class='join-input'>
+      <label for='join-room'>Room: </label>
+      <input id='join-room' type='text' maxlength="10"></input>
+    </div>
+    <div class='join-input'>
+      <label for='join-password'>Password: </label>
+      <input id='join-password' type='password' maxlength="20"></input>
+    </div>
+    <p id='error-message'> </p>
+    <button id='join-enter'>Enter Room</button>
+    <button id='join-create'>Create Room</button>
+  </div>
+
+  <div id="game" style="display:none">
+    <button id="leave-room">Leave Room</button>
+    <div id='title'>
+        <h1>Codenames.plus</h1>
+    </div>
+    <div id="content">
+      <div id="players">
+        <button id='join-red'>Join Red</button>
+        <button id='join-blue'>Join Blue</button>
+        <ul id="red-team"></ul>
+        <ul id="blue-team"></ul>
+        <ul id="undefined-list"></ul>
+        <button id='randomize-teams'>Randomize Teams</button>
+      </div>
+      <div id="app">
+        <div id="info">
+          <p id='score'><span id='score-red'></span> - <span id='score-blue'></span></p>
+          <h2 id='turn'><span id='status'></span> <span id='timer'></span></h2>
+          <button id='end-turn'>End Turn</button>
+        </div>
+        <div id="board">
+          <div class='row' id='row-1'>
+            <button class='tile' onClick="tileClicked(0,0)"></button>
+            <button class='tile' onClick="tileClicked(0,1)"></button>
+            <button class='tile' onClick="tileClicked(0,2)"></button>
+            <button class='tile' onClick="tileClicked(0,3)"></button>
+            <button class='tile' onClick="tileClicked(0,4)"></button>
+          </div>
+          <div class='row' id='row-2'>
+            <button class='tile' onClick="tileClicked(1,0)"></button>
+            <button class='tile' onClick="tileClicked(1,1)"></button>
+            <button class='tile' onClick="tileClicked(1,2)"></button>
+            <button class='tile' onClick="tileClicked(1,3)"></button>
+            <button class='tile' onClick="tileClicked(1,4)"></button>
+          </div>
+          <div class='row' id='row-3'>
+            <button class='tile' onClick="tileClicked(2,0)"></button>
+            <button class='tile' onClick="tileClicked(2,1)"></button>
+            <button class='tile' onClick="tileClicked(2,2)"></button>
+            <button class='tile' onClick="tileClicked(2,3)"></button>
+            <button class='tile' onClick="tileClicked(2,4)"></button>
+          </div>
+          <div class='row' id='row-4'>
+            <button class='tile' onClick="tileClicked(3,0)"></button>
+            <button class='tile' onClick="tileClicked(3,1)"></button>
+            <button class='tile' onClick="tileClicked(3,2)"></button>
+            <button class='tile' onClick="tileClicked(3,3)"></button>
+            <button class='tile' onClick="tileClicked(3,4)"></button>
+          </div>
+          <div class='row' id='row-5'>
+            <button class='tile' onClick="tileClicked(4,0)"></button>
+            <button class='tile' onClick="tileClicked(4,1)"></button>
+            <button class='tile' onClick="tileClicked(4,2)"></button>
+            <button class='tile' onClick="tileClicked(4,3)"></button>
+            <button class='tile' onClick="tileClicked(4,4)"></button>
+          </div>
+        </div>
+        <div id="toggles">
+          <div class='toggle'>
+            <button id='role-guesser' disabled>Guesser</button>
+            <button id='role-spymaster'>Spymaster</button>
+          </div> 
+          <div class='toggle' id='player-difficulty'>
+            <button id='difficulty-normal' disabled>Normal</button>
+            <button id='difficulty-hard'>Hard</button>
+          </div>
+          <div class='toggle'>
+              <button id="mode-casual"disabled>Casual</button>
+              <button id="mode-timed">Timed</button>
+            </div>
+          <button id='new-game'>New Game</button>
+        </div>
+      </div>
+      <div id="space"></div>
+    </div>
+  </div>
+</body>
+<script language="javascript" type="text/javascript" src="js/codenames.js"></script>
+

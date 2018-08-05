@@ -1,0 +1,283 @@
+/*
+Palette:
+
+Black: #323032
+Light-Black: #686c6d
+Blue: #11779F
+Red: #B32728
+White: #F8FDFF
+Grey: #D6D2C9
+
+*/
+
+body {
+  margin: 0;
+  background: #323032;
+  color: #323032;
+  font-family: 'Changa', sans-serif;
+}
+
+* {
+  transition: 0.1s ease-in-out;
+}
+
+#about-button {
+  position: absolute;
+  right: 0;
+  margin-right: 20px;
+  margin-top: 20px;
+  border: 2px solid #F8FDFF;
+  background: #323032;
+  color: #F8FDFF;
+  font-size: 16px;
+}
+
+#about-button.open {
+  color: #323032;
+  background: #F8FDFF;
+}
+
+#about-button:hover {
+  background: #686c6d;
+}
+
+#about-window {
+  position: fixed;
+  width: 80%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #F8FDFF;
+  z-index: 3;
+  top: 20px;
+  bottom: 20px;
+  border-radius: 10px;
+}
+
+#about-window ul {
+  list-style: square !important;
+  padding: 50px;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+#about-window h2 {
+  text-align: center;
+}
+
+#about-window h3 {
+  text-align: center;
+}
+
+#about-window a {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  color: #323032;
+}
+
+#about-window a:hover {
+  color: #11779F;
+}
+
+#join-game {
+  position: absolute;
+  width: 400px;
+  background: #F8FDFF;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  border-radius: 10px;
+}
+
+#join-game h1{
+  color: #323032;
+  font-size: 32px;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+}
+
+#join-game .join-input {
+  position: relative;
+  display: block;
+  width: 230px;
+  margin-left: 80px;
+  text-align: right;
+}
+
+#join-game button {
+  position: relative;
+  margin: 1%;
+  border-radius: 3px;
+  border: 2px solid #686c6d;
+  box-sizing: border-box;
+  padding: 4px;
+  width: 48%;
+  font-size: 16px;
+  background: #686c6d;
+  color: #F8FDFF;
+}
+
+#join-game #join-enter {
+  float: left;
+}
+
+#join-game #join-enter:hover {
+  background: #B32728;
+}
+
+#join-game #join-create:hover {
+  background: #11779F
+}
+
+#join-game #error-message {
+  height: 15px;
+  text-align: center;
+  margin-top: 5px;
+}
+
+button {
+  cursor: pointer;
+  font-family: 'Changa', sans-serif;
+  border-radius: 3px !important;
+  border-style: solid;
+}
+
+#leave-room {
+  position: absolute;
+  margin-left: 20px;
+  margin-top: 20px;
+  border: 2px solid #F8FDFF;
+  background: #323032;
+  color: #F8FDFF;
+  font-size: 16px;
+}
+
+#leave-room:hover {
+  background: #686c6d;
+}
+
+#title {
+  text-align: center;
+  padding: 10px;
+}
+
+#title h1 {
+  color: #F8FDFF;
+  font-size: 22px;
+  margin: 0;
+  padding: 0;
+}
+
+#title #room-name {
+  font-size: 18px;
+  margin: 0;
+  padding: 0;
+  color: #F8FDFF;
+}
+
+#players {
+  position: relative;
+  display: block;
+  background: #F8FDFF;
+  width: 200px;
+  margin-right: 50px;
+  margin-top: 95px;
+  border: 2px solid #F8FDFF;
+  float: left;
+  border-radius: 10px;
+}
+
+#players #join-red{
+  position: relative;
+  width: 46%;
+  margin: 2%;
+  border: 2px solid #B32728;
+  box-sizing: border-box;
+  padding: 4px;
+  float: left;
+  font-size: 16px;
+  
+  color: #F8FDFF;
+  background: #B32728;
+}
+
+#players #join-red:hover {
+  background: #323032;
+  color: #B32728;
+}
+
+#players #join-blue{
+  position: relative;
+  width: 46%;
+  margin: 2%;
+  border: 2px solid #11779F;
+  box-sizing: border-box;
+  padding: 4px;
+  font-size: 16px;
+
+  color: #F8FDFF;
+  background: #11779F;
+}
+
+#players #join-blue:hover {
+  background: #323032;
+  color: #11779F;
+}
+
+#players #randomize-teams{
+  position: relative;
+  width: 96%;
+  margin: 2%;
+  border: 2px solid #686c6d;
+  box-sizing: border-box;
+  padding: 4px;
+  font-size: 16px;
+
+  color: #F8FDFF;
+  background: #686c6d;
+}
+
+#players #randomize-teams:hover {
+  background: #323032;
+}
+
+#players ul{
+  display: inline-block;
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 3px;
+  color: #323032;
+  padding: 3px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+#players #undefined-list {
+  width: 100%;
+}
+
+#players #red-team {
+  width: 50%;
+  float: left;
+  color: #B32728;
+}
+
+#players #blue-team {
+  width: 50%;
+  text-align: center;
+  color: #11779F;
+}
+
+#content {
+  position: absolute;
+  width: 1500px;
+  left: 50%;
+  transform: translateX(-50%)
+}
+
+#space {
+  position: relative;
+  width: 250px;
+}
