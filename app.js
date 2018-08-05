@@ -8,7 +8,7 @@ let express = require('express')
 let app = express()
 
 //Set up server
-let server = app.listen(2000, listen);
+let server = app.listen(process.env.PORT || 2000);
 
 // Callback function confirming server start
 function listen(){
