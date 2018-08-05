@@ -58,6 +58,7 @@ body {
   padding: 50px;
   padding-top: 0;
   margin-top: 0;
+  overflow: auto;
 }
 
 #about-window h2 {
