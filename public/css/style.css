@@ -44,21 +44,23 @@ body {
 #about-window {
   position: fixed;
   width: 80%;
+  height: 80%;
   left: 50%;
   transform: translateX(-50%);
   background: #F8FDFF;
   z-index: 3;
   top: 20px;
-  bottom: 20px;
   border-radius: 10px;
 }
 
 #about-window ul {
+  position: relative;
   list-style: square !important;
   padding: 50px;
   padding-top: 0;
   margin-top: 0;
   overflow: auto;
+  height: 50%;
 }
 
 #about-window h2 {
