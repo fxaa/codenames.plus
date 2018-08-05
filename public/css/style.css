@@ -42,16 +42,15 @@ body {
 }
 
 #about-window {
-  position: fixed;
+  position: absolute;
   width: 80%;
-  max-height: 1100px;
   left: 50%;
   transform: translateX(-50%);
   background: #F8FDFF;
   z-index: 3;
   top: 20px;
-  overflow-y: scroll;
   border-radius: 10px;
+  margin-bottom: 200px;
 }
 
 #about-window ul {
@@ -60,7 +59,6 @@ body {
   padding: 50px;
   padding-top: 0;
   margin-top: 0;
-  margin-bottom: 200px;
 }
 
 #about-window h2 {
