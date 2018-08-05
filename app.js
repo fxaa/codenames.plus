@@ -328,8 +328,10 @@ function clickTile(socket, data){
 
   if (PLAYER_LIST[socket.id].team === ROOM_LIST[room].game.turn){ // If it was this players turn
     if (!ROOM_LIST[room].game.over){  // If the game is not over
-      ROOM_LIST[room].game.flipTile(data.i, data.j) // Send the flipped tile info to the game
-      gameUpdate(room)  // Update everyone in the room
+      if (PLAYER_LIST[socket.id].role !== 'spymaster'){ // If the client isnt spymaster
+        ROOM_LIST[room].game.flipTile(data.i, data.j) // Send the flipped tile info to the game
+        gameUpdate(room)  // Update everyone in the room
+      }
     }
   }
 }
