@@ -36,7 +36,14 @@ let buttonDifficultyHard = document.getElementById('difficulty-hard')
 let buttonModeCasual = document.getElementById('mode-casual')
 let buttonModeTimed = document.getElementById('mode-timed')
 let buttonAbout = document.getElementById('about-button')
-//Player Lists
+let buttonBasecards = document.getElementById('base-pack')
+let buttonDuetcards = document.getElementById('duet-pack')
+let buttonUndercovercards = document.getElementById('undercover-pack')
+let buttonNLSScards = document.getElementById('nlss-pack')
+// Slider
+let timerSlider = document.getElementById('timer-slider')
+let timerSliderLabel = document.getElementById('timer-slider-label')
+// Player Lists
 let undefinedList = document.getElementById('undefined-list')
 let redTeam = document.getElementById('red-team')
 let blueTeam = document.getElementById('blue-team')
@@ -145,7 +152,26 @@ buttonAbout.onclick = () => {
     buttonAbout.className = ''
   }
 }
+// User Clicks card pack
+buttonBasecards.onclick = () => {
+  socket.emit('changeCards', {pack:'base'})
+}
+// User Clicks card pack
+buttonDuetcards.onclick = () => {
+  socket.emit('changeCards', {pack:'duet'})
+}
+// User Clicks card pack
+buttonUndercovercards.onclick = () => {
+  socket.emit('changeCards', {pack:'undercover'})
+}
+// User Clicks card pack
+buttonNLSScards.onclick = () => {
+  socket.emit('changeCards', {pack:'nlss'})
+}
 
+timerSlider.addEventListener("input", () =>{
+  socket.emit('timerSlider', {value:timerSlider.value})
+})
 
 // Server Responses to this client
 ////////////////////////////////////////////////////////////////////////////
@@ -210,6 +236,8 @@ socket.on('gameState', (data) =>{           // Response to gamestate update
   }
   mode = data.mode                      // Update the clients game mode
   updateInfo(data.game, data.team)      // Update the games turn information
+  updateTimerSlider(data.game, data.mode)          // Update the games timer slider
+  updatePacks(data.game)                // Update the games pack information
   updatePlayerlist(data.players)        // Update the player list for the room
   updateBoard(data.game.board)          // Update the board display
 })
@@ -242,6 +270,35 @@ function updateInfo(game, team){
   if (team !== game.turn) endTurn.disabled = true         // Disable end turn button for opposite team
   else endTurn.disabled = false
   if (playerRole === 'spymaster') endTurn.disabled = true // Disable end turn button for spymasters
+}
+
+// Update the clients timer slider
+function updateTimerSlider(game, mode){
+  let minutes = (game.timerAmount - 1) / 60
+  timerSlider.value = minutes
+  timerSliderLabel.innerHTML = "Timer Length : " + timerSlider.value + "min"
+
+  // If the mode is not timed, dont show the slider
+  if (mode === 'casual'){
+    timerSlider.style.display = 'none'
+    timerSliderLabel.style.display = 'none'
+  } else {
+    timerSlider.style.display = 'block'
+    timerSliderLabel.style.display = 'block'
+  }
+}
+
+// Update the pack toggle buttons
+function updatePacks(game){
+  if (game.base) buttonBasecards.className = 'enabled'
+  else buttonBasecards.className = ''
+  if (game.duet) buttonDuetcards.className = 'enabled'
+  else buttonDuetcards.className = ''
+  if (game.undercover) buttonUndercovercards.className = 'enabled'
+  else buttonUndercovercards.className = ''
+  if (game.nlss) buttonNLSScards.className = 'enabled'
+  else buttonNLSScards.className = ''
+  document.getElementById('word-pool').innerHTML = "Word Pool: " + game.words.length
 }
 
 // Update the board

@@ -1,154 +1,191 @@
-var fs = require('fs');
-var readline = require('readline');
 
-var words = []
+let fs = require('fs')
+let readline = require('readline')
 
-var filename = './server/words.txt';
+// Load base words into an array
+let basewords = []
+var filename = './server/words.txt'
 readline.createInterface({
     input: fs.createReadStream(filename),
     terminal: false
-}).on('line', function(line) {
-   words.push(line)
-});
+}).on('line', (line) => {basewords.push(line)})
 
+// Load NLSS words into an array
+let nlsswords = []
+filename = './server/nlss-words.txt'
+readline.createInterface({
+    input: fs.createReadStream(filename),
+    terminal: false
+}).on('line', (line) => {nlsswords.push(line)})
+
+// Load Duet words into an array
+let duetwords = []
+filename = './server/duet-words.txt'
+readline.createInterface({
+    input: fs.createReadStream(filename),
+    terminal: false
+}).on('line', (line) => {duetwords.push(line)})
+
+// Load Undercover words into an array
+let undercoverwords = []
+filename = './server/undercover-words.txt'
+readline.createInterface({
+    input: fs.createReadStream(filename),
+    terminal: false
+}).on('line', (line) => {undercoverwords.push(line)})
+
+// Codenames Game
 class Game{
   constructor(){
-    this.randomTurn()
-    this.over = false;
-    this.winner = ''
-    this.timer = 61
+    this.timerAmount = 61 // Default timer value
 
-    this.board
-    this.newBoard()
+    this.words = basewords  // Load default word pack
+    this.base = true
+    this.duet = false
+    this.undercover = false
+    this.nlss = false
 
-    this.red = this.findType('red')
-    this.blue = this.findType('blue')
+    this.init();
+
+    this.red = this.findType('red')   // keeps track of unflipped red tiles
+    this.blue = this.findType('blue') // keeps track of unflipped blue tiles
   }
 
-  checkWin(){
-    this.red = this.findType('red')
-    this.blue = this.findType('blue')
+  init(){
+    this.randomTurn()   // When game is created, select red or blue to start, randomly
+    this.over = false   // Whether or not the game has been won / lost
+    this.winner = ''    // Winning team
+    this.timer = this.timerAmount // Set the timer
 
+    this.board        // Init the board
+    this.newBoard()   // Populate the board
+  }
+
+  // Check the number of unflipped team tiles and determine if someone won
+  checkWin(){
+    this.red = this.findType('red')   // unflipped red tiles
+    this.blue = this.findType('blue') // unflipped blue tiles
+    // Check team winner
     if (this.red === 0) {
-      this.over = true;
+      this.over = true
       this.winner = 'red'
     }
     if (this.blue === 0) {
-      this.over = true;
+      this.over = true
       this.winner = 'blue'
     }
   }
 
+  // When called, will change a tiles state to flipped
   flipTile(i,j){
     if (!this.board[i][j].flipped){
-      var type = this.board[i][j].type
-      this.board[i][j].flipped = true
-
-
-      if (type === 'death') {
+      let type = this.board[i][j].type // Find the type of tile (red/blue/neutral/death)
+      this.board[i][j].flipped = true  // Flip tile
+      if (type === 'death') { // If death was flipped, end the game and find winner
         this.over = true
         if(this.turn === 'blue') this.winner = 'red'
         else this.winner = 'blue'
       }
-      if (type === 'neutral') this.switchTurn()
-      if (type !== this.turn && type !== 'neutral') this.switchTurn()
-
-      this.checkWin();
+      else if (type === 'neutral') this.switchTurn() // Switch turn if neutral was flipped
+      else if (type !== this.turn) this.switchTurn() // Switch turn if opposite teams tile was flipped
+      this.checkWin() // See if the game is over
     }
   }
 
+  // Find the count of the passed tile type
   findType(type){
-    var count = 0
-    for (var i = 0; i < 5; i++){
-      for (var j = 0; j < 5; j++){
+    let count = 0
+    for (let i = 0; i < 5; i++){
+      for (let j = 0; j < 5; j++){
         if (this.board[i][j].type === type && !this.board[i][j].flipped) count++
       }
     }
     return count
   }
 
+  // Reset the timer and swap the turn over to the other team
   switchTurn(){
-    this.timer = 61
-    if (this.turn === 'blue') this.turn = 'red'
+    this.timer = this.timerAmount               // Reset timer
+    if (this.turn === 'blue') this.turn = 'red' // Swith turn
     else this.turn = 'blue'
   }
 
+  // 50% red turn, 50% blue turn
   randomTurn(){
     this.turn = 'blue'
     if (Math.random() < 0.5) this.turn = 'red'
   }
 
-  updateScore(){
-    this.red = this.findType('red')
-    this.blue = this.findType('blue')
-  }
-
+  // Randomly assigns a death tile and red / blue tiles
   initBoard(){
-    var changed = []
+    let changed = []              // Keep track of tiles that have been givin a type
+    let tile = this.randomTile()  // Temp tile object that has a random num (0-24) and a coordinate on the grid
+    this.board[tile.i][tile.j].type = 'death' // Make the first selected tile a death
+    changed.push(tile.num)        // Add the tiles random num (0-24) to the changed []
 
-    var tile = this.randomTile()
-    while (changed.includes(tile.num)) tile = this.randomTile()
-    
-    this.board[tile.i][tile.j].type = 'death'
-    changed.push(tile.num)
-
-    var color = this.turn;
-    for (var i = 0; i < 17; i++){
-
-      tile = this.randomTile()
-      while (changed.includes(tile.num)) tile = this.randomTile()
-      
-
-      this.board[tile.i][tile.j].type = color 
-
-      changed.push(tile.num)
-
+    let color = this.turn;        // First teams color (whomevers turn it is)
+    for (let i = 0; i < 17; i++){ // Set tiles' color 17 times(9 for team1, 8 for team2)
+      tile = this.randomTile()    // Selected a new random tile
+      while (changed.includes(tile.num)) tile = this.randomTile() // If the tile has already been changed, find a new random tile
+      this.board[tile.i][tile.j].type = color // Set the tiles color
+      changed.push(tile.num)      // Add the tiles random num (0-24) to the changed []
+      // Swap the temp color for the next added tile
       if (color === 'blue') color = 'red'
       else color = 'blue'
     }
   }
 
+  // Find a random number between 0-24
+  // Convert that number to a coordinate on a 5x5 grid (0-4)(0-4)
+  // Return an object with the random number and the coordinates
   randomTile(){
-    var num = Math.floor(Math.random() * 25)
-    var i = Math.floor(num / 5)
-    var j = num % 5
+    let num = Math.floor(Math.random() * 25)
+    let i = Math.floor(num / 5)
+    let j = num % 5
     return {num, i, j}
   }
 
+  // Create a new 5x5 board of random words
   newBoard(){
-    this.randomTurn()
+    this.randomTurn()   // Pick a new random turn
+    this.board = new Array();  // Init the board to be a 2d array
+    for (let i = 0; i < 5; i++) {this.board[i] = new Array()}
+    let usedWords = [] // Keep track of used words
+    let foundWord      // Temp var for a word out of the list
 
-    this.board = new Array();
-    for (var i = 0; i < 5; i++){
-      this.board[i] = new Array();
-    }
-
-    var usedWords = []
-
-    for (var i = 0; i < 5; i++){
-      for (var j = 0; j < 5; j++){
-        var foundWord = words[Math.floor(Math.random() * words.length)]
-
-        while (usedWords.includes(foundWord)){
-          foundWord = words[Math.floor(Math.random() * words.length)]
+    for (let i = 0; i < 5; i++){
+      for (let j = 0; j < 5; j++){
+        foundWord = this.words[Math.floor(Math.random() * this.words.length)] // Pick a random word from the pool
+        // If the word is already on the board, pick another
+        while (usedWords.includes(foundWord)){  
+          foundWord = this.words[Math.floor(Math.random() * this.words.length)]
         }
-
-        usedWords.push(foundWord)
-
-        this.board[i][j] = {
+        usedWords.push(foundWord) // Add the word to the used list
+        this.board[i][j] = {      // Add the tile object to the board
           word:foundWord,
           flipped:false,
           type:'neutral'
         }
       }
     }
-    this.initBoard()
-    this.updateScore()
+    this.initBoard() // randomly select the team words and death word
+    
+    this.red = this.findType('red') // Update the number of each teams words
+    this.blue = this.findType('blue')
   }
 
+  updateWordPool(){
+    let pool = []
+    if (this.base) pool = pool.concat(basewords)
+    if (this.duet) pool = pool.concat(duetwords)
+    if (this.undercover) pool = pool.concat(undercoverwords)
+    if (this.nlss) pool = pool.concat(nlsswords)
+    this.words = pool
+  }
 
+  // Debugging purposes
   printBoard(){
-    for (var i = 0; i < 5; i++){
+    for (let i = 0; i < 5; i++){
       console.log(this.board[i][0].type + " | " +
                   this.board[i][1].type + " | " +
                   this.board[i][2].type + " | " +
@@ -158,4 +195,5 @@ class Game{
   }
 }
 
+// Let the main nodejs server know this file exists
 module.exports = Game;

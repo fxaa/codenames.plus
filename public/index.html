@@ -68,13 +68,30 @@
         <h1>Codenames.plus</h1>
     </div>
     <div id="content">
-      <div id="players">
-        <button id='join-red'>Join Red</button>
-        <button id='join-blue'>Join Blue</button>
-        <ul id="red-team"></ul>
-        <ul id="blue-team"></ul>
-        <ul id="undefined-list"></ul>
-        <button id='randomize-teams'>Randomize Teams</button>
+      <div id="left">
+          <div id="players">
+            <h2>Players</h2>
+            <div id='panel'>
+              <button id='join-red'>Join Red</button>
+              <button id='join-blue'>Join Blue</button>
+              <ul id="red-team"></ul>
+              <ul id="blue-team"></ul>
+              <ul id="undefined-list"></ul>
+              <button id='randomize-teams'>Randomize Teams</button>
+            </div>
+          </div>
+          <div id="card-packs">
+            <h2>Card Packs</h2>
+            <p id='word-pool'>Word Pool</p>
+            <button class='enabled' id="base-pack">Base Pack</button>
+            <button id="duet-pack">Duet Pack</button>
+            <button id="undercover-pack">Undercover Pack (NSFW)</button>
+            <button id="nlss-pack">NLSS Pack</button>
+          </div>
+          <div id="controls">
+              <label id="timer-slider-label" for="timer">Timer Length</label>
+              <input type="range" id="timer-slider" name="timer" min="0.5" max="5" value="1.0" step="0.5"/>
+          </div>
       </div>
       <div id="app">
         <div id="info">

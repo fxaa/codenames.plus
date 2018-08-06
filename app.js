@@ -154,7 +154,7 @@ io.sockets.on('connection', function(socket){
   socket.on('switchMode', (data) => {
     let room = PLAYER_LIST[socket.id].room  // Get the room the client was in
     ROOM_LIST[room].mode = data.mode;       // Update the rooms game mode
-    ROOM_LIST[room].game.timer = 61;        // Reset the timer in the room's game
+    ROOM_LIST[room].game.timer = ROOM_LIST[room].game.timerAmount;   // Reset the timer in the room's game
     gameUpdate(room)                        // Update the game for everyone in this room
   })
 
@@ -168,6 +168,41 @@ io.sockets.on('connection', function(socket){
   // Click Tile. Called when client clicks a tile
   // Data: x and y location of tile in grid
   socket.on('clickTile', (data) => {clickTile(socket, data)})
+
+  // Change card packs
+  socket.on('changeCards', (data) => {
+    let room = PLAYER_LIST[socket.id].room  // Get the room the client was in
+    let game = ROOM_LIST[room].game
+    if(data.pack === 'base'){               // Toggle packs in the game
+      game.base = !game.base
+    } else if (data.pack === 'duet'){
+      game.duet = !game.duet
+    } else if (data.pack === 'undercover'){
+      game.undercover = !game.undercover
+    } else if (data.pack === 'nlss'){
+      game.nlss = !game.nlss
+    }
+    // If all options are disabled, re-enable the base pack
+    if (!game.base && !game.duet && !game.undercover && !game.nlss) game.base = true
+
+    game.updateWordPool()
+    gameUpdate(room)
+  })
+
+  // Change timer slider
+  socket.on('timerSlider', (data) => {
+    if (PLAYER_LIST[socket.id]){
+      let room = PLAYER_LIST[socket.id].room  // Get the room the client was in
+      let game = ROOM_LIST[room].game
+      let currentAmount = game.timerAmount - 1  // Current timer amount
+      let seconds = (data.value * 60) + 1       // the new amount of the slider
+      if (currentAmount !== seconds){           // if they dont line up, update clients
+        game.timerAmount = seconds
+        game.timer = game.timerAmount
+        gameUpdate(room)
+      }
+    }
+  })
 })
 
 // Create room function
@@ -295,7 +330,7 @@ function randomizeTeams(socket){
 // Gets client that requested the new game and instantiates a new game board for the room
 function newGame(socket){
   let room = PLAYER_LIST[socket.id].room  // Get the room that the client called from
-  ROOM_LIST[room].game = new Game();      // Make a new game for that room
+  ROOM_LIST[room].game.init();      // Make a new game for that room
 
   // Make everyone in the room a guesser and tell their client the game is new
   for(let player in ROOM_LIST[room].players){

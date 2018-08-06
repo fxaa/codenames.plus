@@ -10,6 +10,70 @@ Grey: #D6D2C9
 
 */
 
+
+@media(max-width: 1600px){
+  #board .row .tile{
+    height: 90px !important;
+    font-size: 18px;
+  }
+
+  #content {
+    width: 1300px !important;
+  }
+
+  #space {
+    width: 0px !important;
+  }
+}
+
+@media(max-width: 1100px){
+
+  #app {
+    width: 950px !important;
+  }
+  #content {
+    width: 950px !important;
+  }
+
+  #left {
+    position: relative;
+    width: 950px !important;
+  }
+
+  #players {
+    width: 48% !important;
+    margin-right: 2% !important;
+    float: left;
+  }
+
+  #card-packs {
+    width: 48% !important;
+    margin-left: 2% !important;
+    float: left;
+  }
+
+  #space {
+    width: 0px !important;
+  }
+}
+
+
+#app {
+  position: relative;
+  display: block;
+  float: left;
+  width: 1000px;
+}
+
+#info {
+  position: relative;
+  width: 100%;
+  height: 70px;
+  margin-bottom: 20px;
+}
+
+
+
 body {
   margin: 0;
   background: #323032;
@@ -184,19 +248,43 @@ button {
   color: #F8FDFF;
 }
 
-#players {
+#left {
   position: relative;
-  display: block;
-  background: #F8FDFF;
   width: 200px;
   margin-right: 50px;
   margin-top: 95px;
-  border: 2px solid #F8FDFF;
   float: left;
-  border-radius: 10px;
 }
 
-#players #join-red{
+#content {
+  position: absolute;
+  width: 1500px;
+  left: 50%;
+  transform: translateX(-50%)
+}
+
+#players {
+  position: relative;
+  width: 100%;
+  margin-bottom: 50px;
+}
+
+#players #panel{
+  position: relative;
+  width: 100%;
+  background: #F8FDFF;
+  border: 2px solid #F8FDFF;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+#players h2 {
+  color: #F8FDFF;
+  text-align: center;
+  margin: 0;
+}
+
+#players #panel #join-red{
   position: relative;
   width: 46%;
   margin: 2%;
@@ -210,12 +298,12 @@ button {
   background: #B32728;
 }
 
-#players #join-red:hover {
+#players #panel #join-red:hover {
   background: #323032;
   color: #B32728;
 }
 
-#players #join-blue{
+#players #panel #join-blue{
   position: relative;
   width: 46%;
   margin: 2%;
@@ -228,12 +316,12 @@ button {
   background: #11779F;
 }
 
-#players #join-blue:hover {
+#players #panel #join-blue:hover {
   background: #323032;
   color: #11779F;
 }
 
-#players #randomize-teams{
+#players #panel #randomize-teams{
   position: relative;
   width: 96%;
   margin: 2%;
@@ -246,11 +334,11 @@ button {
   background: #686c6d;
 }
 
-#players #randomize-teams:hover {
+#players #panel #randomize-teams:hover {
   background: #323032;
 }
 
-#players ul{
+#players #panel ul{
   display: inline-block;
   position: relative;
   list-style: none;
@@ -262,27 +350,75 @@ button {
   text-align: center;
 }
 
-#players #undefined-list {
+#players #panel #undefined-list {
   width: 100%;
 }
 
-#players #red-team {
+#players #panel #red-team {
   width: 50%;
   float: left;
   color: #B32728;
 }
 
-#players #blue-team {
+#players #panel #blue-team {
   width: 50%;
   text-align: center;
   color: #11779F;
 }
 
-#content {
-  position: absolute;
-  width: 1500px;
-  left: 50%;
-  transform: translateX(-50%)
+#card-packs {
+  position: relative;
+  width: 100%;
+  margin: 0;
+}
+
+#card-packs h2 {
+  color: #F8FDFF;
+  text-align: center;
+  margin: 0;
+  line-height: 20px;
+}
+
+#card-packs p {
+  color: #F8FDFF;
+  text-align: center;
+  margin: 0;
+  margin-bottom: 20px;
+}
+
+#card-packs button {
+  width: 100%;
+  margin: 0;
+  margin-bottom: 20px;
+  border: 2px solid #F8FDFF;
+  color: #F8FDFF;
+  background: #323032;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+#card-packs button.enabled {
+  background: #F8FDFF;
+  color: #323032;
+  font-weight: bold;
+}
+
+#card-packs button:hover {
+  background: #686c6d;
+}
+
+#controls {
+  position: relative;
+  width: 100%;
+}
+
+#controls label {
+  color: #F8FDFF;
+}
+
+#controls input {
+  width: 100%;
+  margin: 0;
 }
 
 #space {
