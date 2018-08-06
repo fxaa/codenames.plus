@@ -78,7 +78,6 @@ class Player {
 
     // Add player to player list and add their socket to the socket list
     PLAYER_LIST[this.id] = this
-    SOCKET_LIST[this.id] = socket
   }
 
   // When a player joins a room, evenly distribute them to a team
@@ -95,6 +94,7 @@ class Player {
 io.sockets.on('connection', function(socket){
 
   // Alert server of the socket connection
+  SOCKET_LIST[socket.id] = socket
   console.log('[Client connection] id: ' + socket.id)
   logStats()
 
@@ -128,6 +128,7 @@ io.sockets.on('connection', function(socket){
   // Join Team. Called when client joins a team (red / blue)
   // Data: team color
   socket.on('joinTeam', (data) => {
+    if (!PLAYER_LIST[socket.id]) return // Prevent Crash
     let player = PLAYER_LIST[socket.id];  // Get player who made request
     player.team = data.team               // Update their team
     gameUpdate(player.room)               // Update the game for everyone in their room
@@ -146,6 +147,7 @@ io.sockets.on('connection', function(socket){
   // Switch Difficulty. Called when spymaster switches to hard / normal
   // Data: New difficulty
   socket.on('switchDifficulty', (data) => {
+    if (!PLAYER_LIST[socket.id]) return // Prevent Crash
     let room = PLAYER_LIST[socket.id].room        // Get room the client was in
     ROOM_LIST[room].difficulty = data.difficulty  // Update the rooms difficulty
     gameUpdate(room)                              // Update the game for everyone in this room
@@ -154,6 +156,7 @@ io.sockets.on('connection', function(socket){
   // Switch Mode. Called when client switches to casual / timed
   // Data: New mode
   socket.on('switchMode', (data) => {
+    if (!PLAYER_LIST[socket.id]) return // Prevent Crash
     let room = PLAYER_LIST[socket.id].room  // Get the room the client was in
     ROOM_LIST[room].mode = data.mode;       // Update the rooms game mode
     ROOM_LIST[room].game.timer = ROOM_LIST[room].game.timerAmount;   // Reset the timer in the room's game
@@ -162,6 +165,7 @@ io.sockets.on('connection', function(socket){
 
   // End Turn. Called when client ends teams turn
   socket.on('endTurn', () => {
+    if (!PLAYER_LIST[socket.id]) return // Prevent Crash
     let room = PLAYER_LIST[socket.id].room  // Get the room the client was in
     ROOM_LIST[room].game.switchTurn()       // Switch the room's game's turn
     gameUpdate(room)                        // Update the game for everyone in this room
@@ -173,38 +177,37 @@ io.sockets.on('connection', function(socket){
 
   // Change card packs
   socket.on('changeCards', (data) => {
-    if (PLAYER_LIST[socket.id]){
-      let room = PLAYER_LIST[socket.id].room  // Get the room the client was in
-      let game = ROOM_LIST[room].game
-      if(data.pack === 'base'){               // Toggle packs in the game
-        game.base = !game.base
-      } else if (data.pack === 'duet'){
-        game.duet = !game.duet
-      } else if (data.pack === 'undercover'){
-        game.undercover = !game.undercover
-      } else if (data.pack === 'nlss'){
-        game.nlss = !game.nlss
-      }
-      // If all options are disabled, re-enable the base pack
-      if (!game.base && !game.duet && !game.undercover && !game.nlss) game.base = true
-
-      game.updateWordPool()
-      gameUpdate(room)
+    if (!PLAYER_LIST[socket.id]) return // Prevent Crash
+    let room = PLAYER_LIST[socket.id].room  // Get the room the client was in
+    let game = ROOM_LIST[room].game
+    if(data.pack === 'base'){               // Toggle packs in the game
+      game.base = !game.base
+    } else if (data.pack === 'duet'){
+      game.duet = !game.duet
+    } else if (data.pack === 'undercover'){
+      game.undercover = !game.undercover
+    } else if (data.pack === 'nlss'){
+      game.nlss = !game.nlss
     }
+    // If all options are disabled, re-enable the base pack
+    if (!game.base && !game.duet && !game.undercover && !game.nlss) game.base = true
+
+    game.updateWordPool()
+    gameUpdate(room)
+    
   })
 
   // Change timer slider
   socket.on('timerSlider', (data) => {
-    if (PLAYER_LIST[socket.id]){
-      let room = PLAYER_LIST[socket.id].room  // Get the room the client was in
-      let game = ROOM_LIST[room].game
-      let currentAmount = game.timerAmount - 1  // Current timer amount
-      let seconds = (data.value * 60) + 1       // the new amount of the slider
-      if (currentAmount !== seconds){           // if they dont line up, update clients
-        game.timerAmount = seconds
-        game.timer = game.timerAmount
-        gameUpdate(room)
-      }
+    if (!PLAYER_LIST[socket.id]) return // Prevent Crash
+    let room = PLAYER_LIST[socket.id].room  // Get the room the client was in
+    let game = ROOM_LIST[room].game
+    let currentAmount = game.timerAmount - 1  // Current timer amount
+    let seconds = (data.value * 60) + 1       // the new amount of the slider
+    if (currentAmount !== seconds){           // if they dont line up, update clients
+      game.timerAmount = seconds
+      game.timer = game.timerAmount
+      gameUpdate(room)
     }
   })
 })
@@ -275,21 +278,19 @@ function joinRoom(socket, data){
 // Leave room function
 // Gets the client that left the room and removes them from the room's player list
 function leaveRoom(socket){
-  if (PLAYER_LIST[socket.id]){
-    let player = PLAYER_LIST[socket.id]              // Get the player that made the request
-    delete SOCKET_LIST[player.id]                    // Delete the client from the socket list
-    delete PLAYER_LIST[player.id]                    // Delete the player from the player list
-    delete ROOM_LIST[player.room].players[player.id] // Remove the player from their room
-    gameUpdate(player.room)                          // Update everyone in the room
-    
-    // If the number of players in the room is 0 at this point, delete the room entirely
-    if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
-      console.log('[Room Deleted] Name: ' + ROOM_LIST[player.room].room)
-      delete ROOM_LIST[player.room]
-    }
-    socket.emit('leaveResponse', {success:true})     // Tell the client the action was successful
-    logStats()
+  if (!PLAYER_LIST[socket.id]) return // Prevent Crash
+  let player = PLAYER_LIST[socket.id]              // Get the player that made the request
+  delete PLAYER_LIST[player.id]                    // Delete the player from the player list
+  delete ROOM_LIST[player.room].players[player.id] // Remove the player from their room
+  gameUpdate(player.room)                          // Update everyone in the room
+  
+  // If the number of players in the room is 0 at this point, delete the room entirely
+  if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
+    console.log('[Room Deleted] Name: ' + ROOM_LIST[player.room].room)
+    delete ROOM_LIST[player.room]
   }
+  socket.emit('leaveResponse', {success:true})     // Tell the client the action was successful
+  logStats()
 }
 
 // Disconnect function
@@ -302,19 +303,21 @@ function socketDisconnect(socket){
   if(player){   // If the player was in a room
     delete ROOM_LIST[player.room].players[socket.id] // Remove the player from their room
     gameUpdate(player.room)                          // Update everyone in the room
-    logStats()
+    
     // If the number of players in the room is 0 at this point, delete the room entirely
     if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
       console.log('[Room Deleted] Name: ' + ROOM_LIST[player.room].room)
       delete ROOM_LIST[player.room]
     }
   }
+  logStats()
   console.log('[Client disconnect] id: ' + socket.id)
 }
 
 // Randomize Teams function
 // Will mix up the teams in the room that the client is in
 function randomizeTeams(socket){
+  if (!PLAYER_LIST[socket.id]) return // Prevent Crash
   let room = PLAYER_LIST[socket.id].room   // Get the room that the client called from
   let players = ROOM_LIST[room].players    // Get the players in the room
 
@@ -346,6 +349,7 @@ function randomizeTeams(socket){
 // New game function
 // Gets client that requested the new game and instantiates a new game board for the room
 function newGame(socket){
+  if (!PLAYER_LIST[socket.id]) return // Prevent Crash
   let room = PLAYER_LIST[socket.id].room  // Get the room that the client called from
   ROOM_LIST[room].game.init();      // Make a new game for that room
 
@@ -361,6 +365,7 @@ function newGame(socket){
 // Switch role function
 // Gets clients requested role and switches it
 function switchRole(socket, data){
+  if (!PLAYER_LIST[socket.id]) return // Prevent Crash
   let room = PLAYER_LIST[socket.id].room // Get the room that the client called from
 
   if (PLAYER_LIST[socket.id].team === 'undecided'){
@@ -376,6 +381,7 @@ function switchRole(socket, data){
 // Click tile function
 // Gets client and the tile they clicked and pushes that change to the rooms game
 function clickTile(socket, data){
+  if (!PLAYER_LIST[socket.id]) return // Prevent Crash
   let room = PLAYER_LIST[socket.id].room  // Get the room that the client called from
 
   if (PLAYER_LIST[socket.id].team === ROOM_LIST[room].game.turn){ // If it was this players turn
