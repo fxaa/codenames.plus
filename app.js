@@ -46,7 +46,7 @@ class Room {
 
     // Add room to room list
     ROOM_LIST[this.room] = this
-    console.log('Room Created: ' + this.room)
+    console.log('[Room Created] Name: ' + this.room)
   }
 }
 
@@ -295,7 +295,10 @@ function socketDisconnect(socket){
     delete ROOM_LIST[player.room].players[socket.id] // Remove the player from their room
     gameUpdate(player.room)                          // Update everyone in the room
     // If the number of players in the room is 0 at this point, delete the room entirely
-    if (Object.keys(ROOM_LIST[player.room].players).length === 0) delete ROOM_LIST[player.room]
+    if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
+      delete ROOM_LIST[player.room]
+      console.log('[Room Deleted] Name: ' + ROOM_LIST[player.room].room)
+    }
   }
   console.log('[Client disconnect] id: ' + socket.id)
 }
