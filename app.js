@@ -96,7 +96,7 @@ io.sockets.on('connection', function(socket){
 
   // Alert server of the socket connection
   console.log('[Client connection] id: ' + socket.id)
-  console.log('[Server Info] Rooms: ' + Object.keys(ROOM_LIST).length + " | Players: " + Object.keys(PLAYER_LIST).length)
+  logStats()
 
   // Pass server stats to client
   socket.emit('serverStats', {
@@ -235,6 +235,7 @@ function createRoom(socket, data){
         player.joinTeam()                                     // Distribute player to team
         socket.emit('createResponse', {success:true, msg: ""})// Tell client creation was successful
         gameUpdate(roomName)                                  // Update the game for everyone in this room
+        logStats()
       }
     }
   }
@@ -265,6 +266,7 @@ function joinRoom(socket, data){
         player.joinTeam()                                     // Distribute player to team
         socket.emit('joinResponse', {success:true, msg:""})   // Tell client join was successful
         gameUpdate(roomName)                                  // Update the game for everyone in this room
+        logStats()
       }
     }
   }
@@ -279,6 +281,7 @@ function leaveRoom(socket){
     delete PLAYER_LIST[player.id]                    // Delete the player from the player list
     delete ROOM_LIST[player.room].players[player.id] // Remove the player from their room
     gameUpdate(player.room)                          // Update everyone in the room
+    logStats()
     // If the number of players in the room is 0 at this point, delete the room entirely
     if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
       console.log('[Room Deleted] Name: ' + ROOM_LIST[player.room].room)
@@ -298,6 +301,7 @@ function socketDisconnect(socket){
   if(player){   // If the player was in a room
     delete ROOM_LIST[player.room].players[socket.id] // Remove the player from their room
     gameUpdate(player.room)                          // Update everyone in the room
+    logStats()
     // If the number of players in the room is 0 at this point, delete the room entirely
     if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
       console.log('[Room Deleted] Name: ' + ROOM_LIST[player.room].room)
@@ -397,6 +401,10 @@ function gameUpdate(room){
     gameState.team = PLAYER_LIST[player].team  // Add specific clients team info
     SOCKET_LIST[player].emit('gameState', gameState)  // Pass data to the client
   }
+}
+
+function logStats(){
+  console.log('[Server Info] Rooms: ' + Object.keys(ROOM_LIST).length + " | Players: " + Object.keys(PLAYER_LIST).length)
 }
 
 // Every second, update the timer in the rooms that are on timed mode
