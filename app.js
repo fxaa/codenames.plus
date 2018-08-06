@@ -405,7 +405,7 @@ function gameUpdate(room){
 }
 
 function logStats(){
-  console.log('[Server Info] Rooms: ' + Object.keys(ROOM_LIST).length + " | Players: " + Object.keys(PLAYER_LIST).length)
+  console.log('[Server Info] Rooms: ' + Object.keys(ROOM_LIST).length + " | Players: " + Object.keys(PLAYER_LIST).length + " | In Lobby: " + Object.keys(SOCKET_LIST).length)
 }
 
 // Every second, update the timer in the rooms that are on timed mode
