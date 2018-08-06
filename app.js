@@ -46,6 +46,7 @@ class Room {
 
     // Add room to room list
     ROOM_LIST[this.room] = this
+    console.log('Room Created: ' + this.room)
   }
 }
 
@@ -171,22 +172,24 @@ io.sockets.on('connection', function(socket){
 
   // Change card packs
   socket.on('changeCards', (data) => {
-    let room = PLAYER_LIST[socket.id].room  // Get the room the client was in
-    let game = ROOM_LIST[room].game
-    if(data.pack === 'base'){               // Toggle packs in the game
-      game.base = !game.base
-    } else if (data.pack === 'duet'){
-      game.duet = !game.duet
-    } else if (data.pack === 'undercover'){
-      game.undercover = !game.undercover
-    } else if (data.pack === 'nlss'){
-      game.nlss = !game.nlss
-    }
-    // If all options are disabled, re-enable the base pack
-    if (!game.base && !game.duet && !game.undercover && !game.nlss) game.base = true
+    if (PLAYER_LIST[socket.id]){
+      let room = PLAYER_LIST[socket.id].room  // Get the room the client was in
+      let game = ROOM_LIST[room].game
+      if(data.pack === 'base'){               // Toggle packs in the game
+        game.base = !game.base
+      } else if (data.pack === 'duet'){
+        game.duet = !game.duet
+      } else if (data.pack === 'undercover'){
+        game.undercover = !game.undercover
+      } else if (data.pack === 'nlss'){
+        game.nlss = !game.nlss
+      }
+      // If all options are disabled, re-enable the base pack
+      if (!game.base && !game.duet && !game.undercover && !game.nlss) game.base = true
 
-    game.updateWordPool()
-    gameUpdate(room)
+      game.updateWordPool()
+      gameUpdate(room)
+    }
   })
 
   // Change timer slider
@@ -269,14 +272,16 @@ function joinRoom(socket, data){
 // Leave room function
 // Gets the client that left the room and removes them from the room's player list
 function leaveRoom(socket){
-  let player = PLAYER_LIST[socket.id]              // Get the player that made the request
-  delete SOCKET_LIST[player.id]                    // Delete the client from the socket list
-  delete PLAYER_LIST[player.id]                    // Delete the player from the player list
-  delete ROOM_LIST[player.room].players[player.id] // Remove the player from their room
-  gameUpdate(player.room)                          // Update everyone in the room
-  // If the number of players in the room is 0 at this point, delete the room entirely
-  if (Object.keys(ROOM_LIST[player.room].players).length === 0) delete ROOM_LIST[player.room]
-  socket.emit('leaveResponse', {success:true})     // Tell the client the action was successful
+  if (PLAYER_LIST[socket.id]){
+    let player = PLAYER_LIST[socket.id]              // Get the player that made the request
+    delete SOCKET_LIST[player.id]                    // Delete the client from the socket list
+    delete PLAYER_LIST[player.id]                    // Delete the player from the player list
+    delete ROOM_LIST[player.room].players[player.id] // Remove the player from their room
+    gameUpdate(player.room)                          // Update everyone in the room
+    // If the number of players in the room is 0 at this point, delete the room entirely
+    if (Object.keys(ROOM_LIST[player.room].players).length === 0) delete ROOM_LIST[player.room]
+    socket.emit('leaveResponse', {success:true})     // Tell the client the action was successful
+  }
 }
 
 // Disconnect function
