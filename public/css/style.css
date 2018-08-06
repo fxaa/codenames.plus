@@ -103,9 +103,14 @@ body {
 #join-game .join-input {
   position: relative;
   display: block;
-  width: 230px;
-  margin-left: 80px;
-  text-align: right;
+  width: 275px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+#join-game .join-input input{
+  float: right;
+  line-height: 18px;
 }
 
 #join-game button {
