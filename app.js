@@ -281,13 +281,14 @@ function leaveRoom(socket){
     delete PLAYER_LIST[player.id]                    // Delete the player from the player list
     delete ROOM_LIST[player.room].players[player.id] // Remove the player from their room
     gameUpdate(player.room)                          // Update everyone in the room
-    logStats()
+    
     // If the number of players in the room is 0 at this point, delete the room entirely
     if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
       console.log('[Room Deleted] Name: ' + ROOM_LIST[player.room].room)
       delete ROOM_LIST[player.room]
     }
     socket.emit('leaveResponse', {success:true})     // Tell the client the action was successful
+    logStats()
   }
 }
 
