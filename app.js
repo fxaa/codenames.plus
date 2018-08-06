@@ -279,7 +279,10 @@ function leaveRoom(socket){
     delete ROOM_LIST[player.room].players[player.id] // Remove the player from their room
     gameUpdate(player.room)                          // Update everyone in the room
     // If the number of players in the room is 0 at this point, delete the room entirely
-    if (Object.keys(ROOM_LIST[player.room].players).length === 0) delete ROOM_LIST[player.room]
+    if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
+      console.log('[Room Deleted] Name: ' + ROOM_LIST[player.room].room)
+      delete ROOM_LIST[player.room]
+    }
     socket.emit('leaveResponse', {success:true})     // Tell the client the action was successful
   }
 }
@@ -296,8 +299,8 @@ function socketDisconnect(socket){
     gameUpdate(player.room)                          // Update everyone in the room
     // If the number of players in the room is 0 at this point, delete the room entirely
     if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
-      delete ROOM_LIST[player.room]
       console.log('[Room Deleted] Name: ' + ROOM_LIST[player.room].room)
+      delete ROOM_LIST[player.room]
     }
   }
   console.log('[Client disconnect] id: ' + socket.id)
