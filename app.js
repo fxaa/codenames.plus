@@ -96,6 +96,7 @@ io.sockets.on('connection', function(socket){
 
   // Alert server of the socket connection
   console.log('[Client connection] id: ' + socket.id)
+  console.log('[Server Info] Rooms: ' + Object.keys(ROOM_LIST).length + " | Players: " + Object.keys(PLAYER_LIST).length)
 
   // Pass server stats to client
   socket.emit('serverStats', {
