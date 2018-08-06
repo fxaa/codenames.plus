@@ -310,8 +310,8 @@ function socketDisconnect(socket){
       delete ROOM_LIST[player.room]
     }
   }
-  logStats()
   console.log('[Client disconnect] id: ' + socket.id)
+  logStats()
 }
 
 // Randomize Teams function
