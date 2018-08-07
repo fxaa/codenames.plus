@@ -1,6 +1,9 @@
 
 ////////////////////////////////////////////////////////////////////////////
 
+// SSL Redirect
+var sslRedirect = require('heroku-ssl-redirect')
+
 // Express
 let express = require('express')
 
@@ -19,6 +22,9 @@ function listen(){
 
 // Files for client
 app.use(express.static('public'))
+
+// Enable SSL Redirect
+app.use(sslRedirect())
 
 // Websocket
 let io = require('socket.io')(server)
