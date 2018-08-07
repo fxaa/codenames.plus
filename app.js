@@ -1,9 +1,6 @@
 
 ////////////////////////////////////////////////////////////////////////////
 
-// SSL Redirect
-var sslRedirect = require('heroku-ssl-redirect')
-
 // Express
 let express = require('express')
 
@@ -23,11 +20,16 @@ function listen(){
 // Files for client
 app.use(express.static('public'))
 
-// Enable SSL Redirect
-app.use(sslRedirect())
-
 // Websocket
 let io = require('socket.io')(server)
+
+/* At the top, with other redirect methods before other routes */
+app.get('*',function(req,res,next){
+  if(req.headers['x-forwarded-proto']!='https')
+    res.redirect('https://www.codenames.plus'+req.url)
+  else
+    next() /* Continue to other routes if we're not redirecting */
+})
 
 ////////////////////////////////////////////////////////////////////////////
 
