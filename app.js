@@ -17,19 +17,20 @@ function listen(){
   console.log('Codenames Server Started at http://' + host + ':' + port);
 }
 
+// Force SSL
+app.use((req, res, next) => {
+  if (req.header('x-forwarded-proto') !== 'https') {
+    res.redirect(`https://${req.header('host')}${req.url}`)
+  } else {
+    next();
+  }
+});
+
 // Files for client
 app.use(express.static('public'))
 
 // Websocket
 let io = require('socket.io')(server)
-
-/* At the top, with other redirect methods before other routes */
-app.get('*', function(req,res,next) {
-  if(req.headers['x-forwarded-proto'] != 'https' && process.env.NODE_ENV === 'production')
-    res.redirect('https://'+req.hostname+req.url)
-  else
-    next() /* Continue to other routes if we're not redirecting */
-});
 
 ////////////////////////////////////////////////////////////////////////////
 
