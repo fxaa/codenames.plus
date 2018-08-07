@@ -104,8 +104,7 @@ io.sockets.on('connection', function(socket){
 
   // Alert server of the socket connection
   SOCKET_LIST[socket.id] = socket
-  console.log('[Client connection] id: ' + socket.id)
-  logStats()
+  logStats('CONNECT: ' + socket.id)
 
   // Pass server stats to client
   socket.emit('serverStats', {
@@ -247,7 +246,7 @@ function createRoom(socket, data){
         player.joinTeam()                                     // Distribute player to team
         socket.emit('createResponse', {success:true, msg: ""})// Tell client creation was successful
         gameUpdate(roomName)                                  // Update the game for everyone in this room
-        logStats()
+        logStats(socket.id + "(" + player.nickname + ") CREATED " + ROOM_LIST[player.room].room + "(" + Object.keys(ROOM_LIST[player.room].players).length + ")")
       }
     }
   }
@@ -278,7 +277,8 @@ function joinRoom(socket, data){
         player.joinTeam()                                     // Distribute player to team
         socket.emit('joinResponse', {success:true, msg:""})   // Tell client join was successful
         gameUpdate(roomName)                                  // Update the game for everyone in this room
-        logStats()
+        // Server Log
+        logStats(socket.id + "(" + player.nickname + ") JOINED " + ROOM_LIST[player.room].room + "(" + Object.keys(ROOM_LIST[player.room].players).length + ")")
       }
     }
   }
@@ -292,14 +292,15 @@ function leaveRoom(socket){
   delete PLAYER_LIST[player.id]                    // Delete the player from the player list
   delete ROOM_LIST[player.room].players[player.id] // Remove the player from their room
   gameUpdate(player.room)                          // Update everyone in the room
+  // Server Log
+  logStats(socket.id + "(" + player.nickname + ") LEFT " + ROOM_LIST[player.room].room + "(" + Object.keys(ROOM_LIST[player.room].players).length + ")")
   
   // If the number of players in the room is 0 at this point, delete the room entirely
   if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
-    console.log('[Room Deleted] Name: ' + ROOM_LIST[player.room].room)
+    logStats('DELETE ROOM: ' + ROOM_LIST[player.room].room)
     delete ROOM_LIST[player.room]
   }
   socket.emit('leaveResponse', {success:true})     // Tell the client the action was successful
-  logStats()
 }
 
 // Disconnect function
@@ -312,15 +313,17 @@ function socketDisconnect(socket){
   if(player){   // If the player was in a room
     delete ROOM_LIST[player.room].players[socket.id] // Remove the player from their room
     gameUpdate(player.room)                          // Update everyone in the room
+    // Server Log
+    logStats(socket.id + "(" + player.nickname + ") LEFT " + ROOM_LIST[player.room].room + "(" + Object.keys(ROOM_LIST[player.room].players).length + ")")
     
     // If the number of players in the room is 0 at this point, delete the room entirely
     if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
-      console.log('[Room Deleted] Name: ' + ROOM_LIST[player.room].room)
+      logStats('DELETE ROOM: ' + ROOM_LIST[player.room].room)
       delete ROOM_LIST[player.room]
     }
   }
-  console.log('[Client disconnect] id: ' + socket.id)
-  logStats()
+  // Server Log
+  logStats('DISCONNECT: ' + socket.id)
 }
 
 // Randomize Teams function
@@ -419,9 +422,10 @@ function gameUpdate(room){
   }
 }
 
-function logStats(){
+function logStats(addition){
   let inLobby = Object.keys(SOCKET_LIST).length - Object.keys(PLAYER_LIST).length
-  console.log('[Server Info] Rooms: ' + Object.keys(ROOM_LIST).length + " | Players: " + Object.keys(PLAYER_LIST).length + " | In Lobby: " + inLobby)
+  let stats = '[R: ' + Object.keys(ROOM_LIST).length + " | P: " + Object.keys(PLAYER_LIST).length + " | L: " + inLobby + "] "
+  console.log(stats + addition)
 }
 
 // Every second, update the timer in the rooms that are on timed mode
