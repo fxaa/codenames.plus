@@ -123,7 +123,7 @@ class Game{
     this.board[tile.i][tile.j].type = 'death' // Make the first selected tile a death
     changed.push(tile.num)        // Add the tiles random num (0-24) to the changed []
 
-    let color = this.turn;        // First teams color (whomevers turn it is)
+    let color = this.turn;        // First teams color
     for (let i = 0; i < 17; i++){ // Set tiles' color 17 times(9 for team1, 8 for team2)
       tile = this.randomTile()    // Selected a new random tile
       while (changed.includes(tile.num)) tile = this.randomTile() // If the tile has already been changed, find a new random tile
