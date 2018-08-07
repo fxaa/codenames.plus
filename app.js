@@ -317,7 +317,7 @@ function socketDisconnect(socket){
     
     // If the number of players in the room is 0 at this point, delete the room entirely
     if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
-      logStats('DELETE ROOM: ' + ROOM_LIST[player.room].room)
+      logStats("DELETE ROOM: '" + ROOM_LIST[player.room].room + "'")
       delete ROOM_LIST[player.room]
     }
   }
