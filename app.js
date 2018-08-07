@@ -55,7 +55,6 @@ class Room {
 
     // Add room to room list
     ROOM_LIST[this.room] = this
-    console.log('[Room Created] Name: ' + this.room)
   }
 }
 
@@ -424,7 +423,7 @@ function gameUpdate(room){
 
 function logStats(addition){
   let inLobby = Object.keys(SOCKET_LIST).length - Object.keys(PLAYER_LIST).length
-  let stats = '[R: ' + Object.keys(ROOM_LIST).length + " | P: " + Object.keys(PLAYER_LIST).length + " | L: " + inLobby + "] "
+  let stats = '[R:' + Object.keys(ROOM_LIST).length + " P:" + Object.keys(PLAYER_LIST).length + " L:" + inLobby + "] "
   console.log(stats + addition)
 }
 
