@@ -24,12 +24,12 @@ app.use(express.static('public'))
 let io = require('socket.io')(server)
 
 /* At the top, with other redirect methods before other routes */
-app.get('*',function(req,res,next){
-  if(req.headers['x-forwarded-proto']!='https')
-    res.redirect('https://www.codenames.plus'+req.url)
+app.get('*', function(req,res,next) {
+  if(req.headers['x-forwarded-proto'] != 'https' && process.env.NODE_ENV === 'production')
+    res.redirect('https://'+req.hostname+req.url)
   else
     next() /* Continue to other routes if we're not redirecting */
-})
+});
 
 ////////////////////////////////////////////////////////////////////////////
 
