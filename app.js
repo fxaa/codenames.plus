@@ -32,6 +32,10 @@ app.use(express.static('public'))
 // Websocket
 let io = require('socket.io')(server)
 
+// Catch wildcard socket events
+var middleware = require('socketio-wildcard')()
+io.use(middleware)
+
 ////////////////////////////////////////////////////////////////////////////
 
 // Codenames Game
@@ -83,6 +87,8 @@ class Player {
     this.room = room
     this.team = 'undecided'
     this.role = 'guesser'
+    this.timeout = 2100         // # of seconds until kicked for afk (35min)
+    this.afktimer = this.timeout       
 
     // Add player to player list and add their socket to the socket list
     PLAYER_LIST[this.id] = this
@@ -181,6 +187,12 @@ io.sockets.on('connection', function(socket){
   // Click Tile. Called when client clicks a tile
   // Data: x and y location of tile in grid
   socket.on('clickTile', (data) => {clickTile(socket, data)})
+
+  // Active. Called whenever client interacts with the game, resets afk timer
+  socket.on('*', () => {
+    if (!PLAYER_LIST[socket.id]) return // Prevent Crash
+    PLAYER_LIST[socket.id].afktimer = PLAYER_LIST[socket.id].timeout
+  })
 
   // Change card packs
   socket.on('changeCards', (data) => {
@@ -297,7 +309,7 @@ function leaveRoom(socket){
   // If the number of players in the room is 0 at this point, delete the room entirely
   if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
     delete ROOM_LIST[player.room]
-    logStats('DELETE ROOM: ' + player.room + "'")
+    logStats("DELETE ROOM: '" + player.room + "'")
   }
   socket.emit('leaveResponse', {success:true})     // Tell the client the action was successful
 }
@@ -318,7 +330,7 @@ function socketDisconnect(socket){
     // If the number of players in the room is 0 at this point, delete the room entirely
     if (Object.keys(ROOM_LIST[player.room].players).length === 0) {
       delete ROOM_LIST[player.room]
-      logStats('DELETE ROOM: ' + player.room + "'")
+      logStats("DELETE ROOM: '" + player.room + "'")
     }
   }
   // Server Log
@@ -429,6 +441,16 @@ function logStats(addition){
 
 // Every second, update the timer in the rooms that are on timed mode
 setInterval(()=>{
+  for (let player in PLAYER_LIST){
+    PLAYER_LIST[player].afktimer--      // Count down every players afk timer
+    // Give them a warning 5min before they get kicked
+    if (PLAYER_LIST[player].afktimer < 300) SOCKET_LIST[player].emit('afkWarning')
+    if (PLAYER_LIST[player].afktimer < 0) {   // Kick player if their timer runs out
+      SOCKET_LIST[player].emit('afkKicked')
+      logStats(player + "(" + PLAYER_LIST[player].nickname + ") KICKED FROM '" + ROOM_LIST[PLAYER_LIST[player].room].room + "'(" + Object.keys(ROOM_LIST[PLAYER_LIST[player].room].players).length + ") FOR AFK")
+      leaveRoom(SOCKET_LIST[player])
+    }
+  }
   for (let room in ROOM_LIST){
     if (ROOM_LIST[room].mode === 'timed'){
       ROOM_LIST[room].game.timer--          // If the room is in timed mode, count timer down

@@ -21,6 +21,8 @@ let joinCreate = document.getElementById('join-create')
 let gameDiv = document.getElementById('game')
 let boardDiv = document.getElementById('board')
 let aboutWindow = document.getElementById('about-window')
+let afkWindow = document.getElementById('afk-window')
+let overlay = document.getElementById('overlay')
 // Buttons
 let leaveRoom = document.getElementById('leave-room')
 let joinRed = document.getElementById('join-red')
@@ -36,6 +38,7 @@ let buttonDifficultyHard = document.getElementById('difficulty-hard')
 let buttonModeCasual = document.getElementById('mode-casual')
 let buttonModeTimed = document.getElementById('mode-timed')
 let buttonAbout = document.getElementById('about-button')
+let buttonAfk = document.getElementById('not-afk')
 let buttonBasecards = document.getElementById('base-pack')
 let buttonDuetcards = document.getElementById('duet-pack')
 let buttonUndercovercards = document.getElementById('undercover-pack')
@@ -146,10 +149,12 @@ function tileClicked(i,j){
 buttonAbout.onclick = () => {
   if (aboutWindow.style.display === 'none') {
     aboutWindow.style.display = 'block'
-    buttonAbout.className = 'open'
+    overlay.style.display = 'block'
+    buttonAbout.className = 'open above'
   } else {
     aboutWindow.style.display = 'none'
-    buttonAbout.className = ''
+    overlay.style.display = 'none'
+    buttonAbout.className = 'above'
   }
 }
 // User Clicks card pack
@@ -169,9 +174,17 @@ buttonNLSScards.onclick = () => {
   socket.emit('changeCards', {pack:'nlss'})
 }
 
+// When the slider is changed
 timerSlider.addEventListener("input", () =>{
   socket.emit('timerSlider', {value:timerSlider.value})
 })
+
+// User confirms theyre not afk
+buttonAfk.onclick = () => {
+  socket.emit('active')
+  afkWindow.style.display = 'none'
+  overlay.style.display = 'none'
+}
 
 // Server Responses to this client
 ////////////////////////////////////////////////////////////////////////////
@@ -211,6 +224,16 @@ socket.on('newGameResponse', (data) => {    // Response to New Game
   if (data.success){
     wipeBoard();
   }
+})
+
+socket.on('afkWarning', () => {    // Response to Afk Warning
+  afkWindow.style.display = 'block'
+  overlay.style.display = 'block'
+})
+
+socket.on('afkKicked', () => {    // Response to Afk Kick
+  afkWindow.style.display = 'none'
+  overlay.style.display = 'none'
 })
 
 socket.on('switchRoleResponse', (data) =>{  // Response to Switching Role
