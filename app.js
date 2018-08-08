@@ -447,7 +447,7 @@ setInterval(()=>{
     if (PLAYER_LIST[player].afktimer < 300) SOCKET_LIST[player].emit('afkWarning')
     if (PLAYER_LIST[player].afktimer < 0) {   // Kick player if their timer runs out
       SOCKET_LIST[player].emit('afkKicked')
-      logStats(player + "(" + PLAYER_LIST[player].nickname + ") KICKED FROM '" + ROOM_LIST[PLAYER_LIST[player].room].room + "'(" + Object.keys(ROOM_LIST[PLAYER_LIST[player].room].players).length + ") FOR AFK")
+      logStats(player + "(" + PLAYER_LIST[player].nickname + ") AFK KICKED FROM '" + ROOM_LIST[PLAYER_LIST[player].room].room + "'(" + Object.keys(ROOM_LIST[PLAYER_LIST[player].room].players).length + ")")
       leaveRoom(SOCKET_LIST[player])
     }
   }
