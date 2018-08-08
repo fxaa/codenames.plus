@@ -72,8 +72,6 @@ Grey: #D6D2C9
   margin-bottom: 20px;
 }
 
-
-
 body {
   margin: 0;
   background: #323032;
@@ -83,6 +81,11 @@ body {
 
 * {
   transition: 0.1s ease-in-out;
+  z-index: 1;
+}
+
+.above {
+  z-index: 3 !important;
 }
 
 #about-button {
@@ -111,7 +114,6 @@ body {
   left: 50%;
   transform: translateX(-50%);
   background: #F8FDFF;
-  z-index: 3;
   top: 20px;
   border-radius: 10px;
   margin-bottom: 200px;
@@ -146,13 +148,54 @@ body {
   color: #11779F;
 }
 
+#afk-window {
+  position: fixed;
+  display: none;
+  width: 400px;
+  background: #F8FDFF;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  border-radius: 10px;
+}
+
+#afk-window h3 {
+  text-align: center;
+}
+
+#afk-window button {
+  position: relative;
+  margin: 2%;
+  border-radius: 3px;
+  border: 2px solid #686c6d;
+  box-sizing: border-box;
+  padding: 4px;
+  width: 96%;
+  font-size: 16px;
+  background: #686c6d;
+  color: #F8FDFF;
+}
+
+#afk-window button:hover {
+  background: #11779F;
+}
+
+#overlay {
+  position: fixed;
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  background: rgb(60,60,60, 0.9);
+  z-index: 2 !important;
+}
+
 #join-game {
   position: absolute;
   width: 400px;
   background: #F8FDFF;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -100%);
+  transform: translate(-50%, -50%);
   border-radius: 10px;
 }
 

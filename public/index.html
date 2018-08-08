@@ -19,8 +19,8 @@
 
 <body>
   <span id='server-stats' style='display: none'></span>
-  <button id='about-button'>About</button>
-  <div id = 'about-window' style="display:none">
+  <button id='about-button'class='above'>About</button>
+  <div id = 'about-window' style="display:none"class='above'>
     <div>
       <h2>Codenames.plus by Joooop</h3>
       <a target='_blank' href="https://twitter.com/J0ooop">Follow me on Twitter @j0ooop</a>
@@ -43,6 +43,11 @@
       <li>The game ends when all of one team's agents are identified (winning the game for that team), or when one team has identified the assassin (losing the game). </li>
     </ul>
   </div>
+  <div id='afk-window' class='above'>
+    <h3>Are you still here?</h3>
+    <button id='not-afk'>Yes</button>
+  </div>
+  <div id="overlay"> </div>
   <div id="join-game">
     <h1>Codenames.plus</h1>
     <div class='join-input'>
@@ -61,7 +66,6 @@
     <button id='join-enter'>Enter Room</button>
     <button id='join-create'>Create Room</button>
   </div>
-
   <div id="game" style="display:none">
     <button id="leave-room">Leave Room</button>
     <div id='title'>
