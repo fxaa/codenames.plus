@@ -36,12 +36,6 @@ let io = require('socket.io')(server)
 var middleware = require('socketio-wildcard')()
 io.use(middleware)
 
-// ENV
-require('dotenv').config()
-
-// Heroku API
-console.log(process.env.TEST_VAR)
-
 ////////////////////////////////////////////////////////////////////////////
 
 // Codenames Game
