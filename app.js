@@ -42,7 +42,7 @@ const aws = require('aws-sdk');
    testKey: process.env.TEST
  });
 
- console.log(s3.testKey)
+ console.log(process.env.TEST)
 
 
 
