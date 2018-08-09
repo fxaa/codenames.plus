@@ -44,7 +44,7 @@ var herokuConnection = new heroku({ token: process.env.HEROKU_API_TOKEN });
 // Daily Server Restart time
 // UTC 13:00:00 = 9AM EST
 let restartHour = 19
-let restartMinute = 18
+let restartMinute = 20
 let restartSecond = 5
 
 
