@@ -39,8 +39,9 @@ io.use(middleware)
 // Connect to Heroku API
 var token = process.env.TOKEN;
 var appName = 'codenames-plus';
-var Heroku = require('heroku-client');
-var heroku = new Heroku({ token: token });
+
+const Heroku = require('heroku-client')
+const heroku = new Heroku({ token: process.env.HEROKU_API_TOKEN })
 
 setTimeout(() => {
   heroku.delete('/apps/' + appName + '/dynos/').then( x => console.log(x) );
