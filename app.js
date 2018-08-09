@@ -39,7 +39,7 @@ io.use(middleware)
 const aws = require('aws-sdk');
 
  let s3 = new aws.S3({
-   testKey: process.env.test
+   testKey: process.env.TEST
  });
 
  console.log(s3.testKey)
