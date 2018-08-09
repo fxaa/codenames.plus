@@ -41,6 +41,7 @@ let buttonModeCasual = document.getElementById('mode-casual')
 let buttonModeTimed = document.getElementById('mode-timed')
 let buttonAbout = document.getElementById('about-button')
 let buttonAfk = document.getElementById('not-afk')
+let buttonServerMessageOkay = document.getElementById('server-message-okay')
 let buttonBasecards = document.getElementById('base-pack')
 let buttonDuetcards = document.getElementById('duet-pack')
 let buttonUndercovercards = document.getElementById('undercover-pack')
@@ -185,6 +186,12 @@ timerSlider.addEventListener("input", () =>{
 buttonAfk.onclick = () => {
   socket.emit('active')
   afkWindow.style.display = 'none'
+  overlay.style.display = 'none'
+}
+
+// User confirms server message
+buttonServerMessageOkay.onclick = () => {
+  serverMessageWindow.style.display = 'none'
   overlay.style.display = 'none'
 }
 

@@ -45,6 +45,10 @@ const heroku = new Heroku({ token:process.env.API_TOKEN})// DELETE requests
 let restartHour = 13
 let restartMinute = 0
 let restartSecond = 5
+// restart warning time
+let restartWarningHour = 12
+let restartWarningMinute = 50
+let restartWarningSecond = 2
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -451,8 +455,10 @@ function logStats(addition){
 
 // Restart Heroku Server
 function herokuRestart(){
+  // Let each socket know the server restarted and boot them to lobby
   for (let socket in SOCKET_LIST){
     SOCKET_LIST[socket].emit('serverMessage', {msg:"Server Successfully Restarted for Maintnence"})
+    SOCKET_LIST[socket].emit('leaveResponse', {success:true})
   }
   heroku.delete('/apps/codenames-plus/dynos/').then(app => {})
 }
@@ -469,9 +475,9 @@ setInterval(()=>{
   // Server Daily Restart Logic
   let time = new Date()
   // Warn clients of restart 10min in advance
-  if (time.getHours() === (restartHour - 1) &&
-      time.getMinutes() === (restartMinute + 50) &&
-      time.getSeconds() < 2) herokuRestartWarning()
+  if (time.getHours() === restartWarningHour &&
+      time.getMinutes() === restartWarningMinute &&
+      time.getSeconds() < restartWarningSecond) herokuRestartWarning()
   // Restart server at specified time
   if (time.getHours() === restartHour &&
       time.getMinutes() === restartMinute &&

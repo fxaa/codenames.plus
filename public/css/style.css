@@ -159,6 +159,27 @@ body {
   border-radius: 10px;
 }
 
+#server-message h3 {
+  text-align: center;
+}
+
+#server-message button {
+  position: relative;
+  margin: 2%;
+  border-radius: 3px;
+  border: 2px solid #686c6d;
+  box-sizing: border-box;
+  padding: 4px;
+  width: 96%;
+  font-size: 16px;
+  background: #686c6d;
+  color: #F8FDFF;
+}
+
+#server-message button:hover {
+  background: #11779F;
+}
+
 #afk-window {
   position: fixed;
   display: none;
