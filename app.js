@@ -36,6 +36,8 @@ let io = require('socket.io')(server)
 var middleware = require('socketio-wildcard')()
 io.use(middleware)
 
+console.log(ENV['test'])
+
 ////////////////////////////////////////////////////////////////////////////
 
 // Codenames Game
