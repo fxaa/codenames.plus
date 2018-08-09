@@ -36,7 +36,13 @@ let io = require('socket.io')(server)
 var middleware = require('socketio-wildcard')()
 io.use(middleware)
 
-console.log(System.getenv('test'))
+// const aws = require('aws-sdk');
+
+// let s3 = new aws.S3({
+//   accessKeyId: process.env.S3_KEY,
+//   secretAccessKey: process.env.S3_SECRET
+// });
+
 
 ////////////////////////////////////////////////////////////////////////////
 
