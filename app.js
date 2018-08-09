@@ -36,15 +36,13 @@ let io = require('socket.io')(server)
 var middleware = require('socketio-wildcard')()
 io.use(middleware)
 
-// Connect to Heroku API
-var appName = 'codenames-plus';
-const Heroku = require('heroku-client');
-const herokuConnection = new Heroku({ token: process.env.API_TOKEN });
+// Make API requests
+let request = require('request')
 
 // Daily Server Restart time
 // UTC 13:00:00 = 9AM EST
 let restartHour = 19
-let restartMinute = 33
+let restartMinute = 38
 let restartSecond = 5
 
 
@@ -453,7 +451,20 @@ function logStats(addition){
 
 // Restart Heroku Server
 function herokuRestart(){
-  herokuConnection.delete('/apps/' + appName + '/dynos/').then( x => console.log(x) );
+  let appName = 'codenames-plus'
+  request.delete({
+        url: 'https://api.heroku.com/apps/' + appName + '/dynos/',
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/vnd.heroku+json; version=3',
+            'Authorization': 'Bearer ' + process.env.API_TOKEN
+        }
+    },
+    function(error, response, body) {
+      if (response) console.log(response)
+      if (error) console.log(error)
+    }
+  );
 }
 
 // Every second, update the timer in the rooms that are on timed mode
