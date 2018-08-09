@@ -43,9 +43,8 @@ const heroku = new Heroku({ token:process.env.API_TOKEN})// DELETE requests
 // Daily Server Restart time
 // UTC 13:00:00 = 9AM EST
 let restartHour = 20
-let restartMinute = 35
+let restartMinute = 53
 let restartSecond = 5
-
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -455,10 +454,22 @@ function herokuRestart(){
   heroku.delete('/apps/codenames-plus/dynos/').then(app => {})
 }
 
+// Warn users of restart
+function herokuRestartWarning(){
+  for (let player in PLAYER_LIST){
+    SOCKET_LIST[player].emit('serverMessage', {msg:"Scheduled Server Restart in 10 Minutes"})
+  }
+}
+
 // Every second, update the timer in the rooms that are on timed mode
 setInterval(()=>{
   // Server Daily Restart Logic
   let time = new Date()
+  // Warn clients of restart 10min in advance
+  if (time.getHours() === restartHour - 1 &&
+      time.getMinutes() === restartMinute - 10 &&
+      time.getSeconds() < 2) herokuRestartWarning()
+  // Restart server at specified time
   if (time.getHours() === restartHour &&
       time.getMinutes() === restartMinute &&
       time.getSeconds() < restartSecond) herokuRestart()

@@ -22,6 +22,8 @@ let gameDiv = document.getElementById('game')
 let boardDiv = document.getElementById('board')
 let aboutWindow = document.getElementById('about-window')
 let afkWindow = document.getElementById('afk-window')
+let serverMessageWindow = document.getElementById('server-message')
+let serverMessage = document.getElementById('message')
 let overlay = document.getElementById('overlay')
 // Buttons
 let leaveRoom = document.getElementById('leave-room')
@@ -233,7 +235,15 @@ socket.on('afkWarning', () => {    // Response to Afk Warning
 
 socket.on('afkKicked', () => {    // Response to Afk Kick
   afkWindow.style.display = 'none'
-  overlay.style.display = 'none'
+  serverMessageWindow.style.display = 'block'
+  serverMessage.innerHTML = 'You were kicked for being AFK'
+  overlay.style.display = 'block'
+})
+
+socket.on('serverMessage', (data) => {    // Response to Server message
+  serverMessage.innerHTML = data.msg
+  serverMessageWindow.style.display = 'block'
+  overlay.style.display = 'block'
 })
 
 socket.on('switchRoleResponse', (data) =>{  // Response to Switching Role
