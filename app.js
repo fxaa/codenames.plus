@@ -42,12 +42,12 @@ const heroku = new Heroku({ token:process.env.API_TOKEN})// DELETE requests
 
 // Daily Server Restart time
 // UTC 13:00:00 = 9AM EST
-let restartHour = 21//13
-let restartMinute = 46//0
+let restartHour = 13//13
+let restartMinute = 0//0
 let restartSecond = 5
 // restart warning time
-let restartWarningHour = 21//12
-let restartWarningMinute = 45//50
+let restartWarningHour = 12//12
+let restartWarningMinute = 50//50
 let restartWarningSecond = 2
 
 ////////////////////////////////////////////////////////////////////////////
