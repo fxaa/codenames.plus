@@ -459,11 +459,11 @@ function herokuRestart(){
         headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/vnd.heroku+json; version=3',
-            'Authorization': 'Bearer ' + process.env.API_TOKEN
+            'Authorization': 'Bearer ' + process.env.HEROKU_API_TOKEN
         }
     },
     function(error, response, body) {
-      if (error) console.log(error)
+      console.log(response)
     }
   );
 }
