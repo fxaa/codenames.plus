@@ -45,6 +45,8 @@ let restartHour = 19
 let restartMinute = 38
 let restartSecond = 5
 
+herokuRestart()
+
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -461,7 +463,6 @@ function herokuRestart(){
         }
     },
     function(error, response, body) {
-      if (response) console.log(response)
       if (error) console.log(error)
     }
   );
