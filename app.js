@@ -37,7 +37,9 @@ var middleware = require('socketio-wildcard')()
 io.use(middleware)
 
 // Make API requests
-let request = require('request')
+const Heroku = require('heroku-client')
+const heroku = new Heroku({ token: process.env.HEROKU_API_TOKEN })// DELETE requests
+heroku.delete('/apps/codenames-plus/dynos/').then(app => {})
 
 // Daily Server Restart time
 // UTC 13:00:00 = 9AM EST
