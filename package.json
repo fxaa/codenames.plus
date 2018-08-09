@@ -4,10 +4,9 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "dotenv": "^6.0.0",
+    "aws-sdk": "^2.289.0",
     "express": "^4.16.3",
     "fs": "0.0.1-security",
-    "heroku-client": "^3.0.6",
     "readfile": "^1.0.1",
     "socket.io": "^2.1.1",
     "socketio-wildcard": "^2.0.0"
