@@ -454,7 +454,7 @@ function herokuRestart(){
 // Every second, update the timer in the rooms that are on timed mode
 setInterval(()=>{
   // Server Daily Restart Logic
-  console.log(new Date().getHours)
+  console.log(new Date().getHours())
   // AFK Logic
   for (let player in PLAYER_LIST){
     PLAYER_LIST[player].afktimer--      // Count down every players afk timer
