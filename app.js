@@ -40,7 +40,7 @@ io.use(middleware)
 require('dotenv').config()
 
 // Heroku API
-console.log(process.env(TEST_VAR))
+console.log(process.env.TEST_VAR)
 
 ////////////////////////////////////////////////////////////////////////////
 
