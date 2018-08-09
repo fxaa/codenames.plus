@@ -455,6 +455,8 @@ function herokuRestart(){
 setInterval(()=>{
   // Server Daily Restart Logic
   console.log(new Date().getHours())
+  console.log(new Date().getMinutes())
+  console.log(new Date().getSeconds())
   // AFK Logic
   for (let player in PLAYER_LIST){
     PLAYER_LIST[player].afktimer--      // Count down every players afk timer
