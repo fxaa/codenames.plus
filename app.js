@@ -43,7 +43,7 @@ const heroku = new Heroku({ token:process.env.API_TOKEN})// DELETE requests
 // Daily Server Restart time
 // UTC 13:00:00 = 9AM EST
 let restartHour = 20
-let restartMinute = 51
+let restartMinute = 54
 let restartSecond = 5
 
 ////////////////////////////////////////////////////////////////////////////
@@ -469,8 +469,8 @@ setInterval(()=>{
   // Server Daily Restart Logic
   let time = new Date()
   // Warn clients of restart 10min in advance
-  if (time.getHours() === (restartHour - 1) &&
-      time.getMinutes() === (restartMinute + 55) &&
+  if (time.getHours() === (restartHour) &&
+      time.getMinutes() === (restartMinute - 5) &&
       time.getSeconds() < 2) herokuRestartWarning()
   // Restart server at specified time
   if (time.getHours() === restartHour &&
