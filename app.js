@@ -37,15 +37,14 @@ var middleware = require('socketio-wildcard')()
 io.use(middleware)
 
 // Connect to Heroku API
-var token = process.env.TOKEN;
 var appName = 'codenames-plus';
 var heroku = require('heroku-client');
-var herokuConnection = new heroku({ token: token });
+var herokuConnection = new heroku({ token: process.env.HEROKU_API_TOKEN });
 
 // Daily Server Restart time
 // UTC 13:00:00 = 9AM EST
 let restartHour = 19
-let restartMinute = 15
+let restartMinute = 18
 let restartSecond = 5
 
 
