@@ -453,6 +453,9 @@ function herokuRestart(){
 
 // Every second, update the timer in the rooms that are on timed mode
 setInterval(()=>{
+  // Server Daily Restart Logic
+  console.log(new Date().getHours)
+  // AFK Logic
   for (let player in PLAYER_LIST){
     PLAYER_LIST[player].afktimer--      // Count down every players afk timer
     // Give them a warning 5min before they get kicked
@@ -463,6 +466,7 @@ setInterval(()=>{
       leaveRoom(SOCKET_LIST[player])
     }
   }
+  // Game Timer Logic
   for (let room in ROOM_LIST){
     if (ROOM_LIST[room].mode === 'timed'){
       ROOM_LIST[room].game.timer--          // If the room is in timed mode, count timer down
