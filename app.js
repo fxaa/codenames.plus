@@ -39,7 +39,8 @@ io.use(middleware)
 // Make API requests
 const Heroku = require('heroku-client')
 const heroku = new Heroku({ token: process.env.HEROKU_API_TOKEN })// DELETE requests
-heroku.delete('/apps/codenames-plus/dynos/').then(app => {})
+//heroku.delete('/apps/codenames-plus/dynos/').then(app => {})
+heroku.apps('codenames-plus').dynos().restartAll()
 
 // Daily Server Restart time
 // UTC 13:00:00 = 9AM EST
