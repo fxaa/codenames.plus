@@ -36,14 +36,16 @@ let io = require('socket.io')(server)
 var middleware = require('socketio-wildcard')()
 io.use(middleware)
 
-const aws = require('aws-sdk');
+// Connect to Heroku API
+var token = process.env.TOKEN;
+var appName = 'codenames-plus';
+var heroku = require('heroku-client');
+var heroku = new Heroku({ token: token });
 
- let s3 = new aws.S3({
-   testKey: process.env.TEST
- });
-
- console.log(process.env.TEST)
-
+setTimeout(() => {
+  heroku .delete('/apps/' + appName + '/dynos/')
+           .then( x => console.log(x) );
+}, 10000)
 
 
 ////////////////////////////////////////////////////////////////////////////
