@@ -42,6 +42,12 @@ var appName = 'codenames-plus';
 var heroku = require('heroku-client');
 var herokuConnection = new heroku({ token: token });
 
+// Daily Server Restart time
+// UTC 13:00:00 = 9AM EST
+let restartHour = 19
+let restartMinute = 15
+let restartSecond = 5
+
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -454,9 +460,11 @@ function herokuRestart(){
 // Every second, update the timer in the rooms that are on timed mode
 setInterval(()=>{
   // Server Daily Restart Logic
-  console.log(new Date().getHours())
-  console.log(new Date().getMinutes())
-  console.log(new Date().getSeconds())
+  let time = new Date()
+  if (time.getHours() === restartHour &&
+      time.getMinutes() === restartMinute &&
+      time.getSeconds() < restartSecond) herokuRestart()
+  
   // AFK Logic
   for (let player in PLAYER_LIST){
     PLAYER_LIST[player].afktimer--      // Count down every players afk timer
