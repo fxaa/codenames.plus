@@ -42,10 +42,6 @@ var appName = 'codenames-plus';
 var heroku = require('heroku-client');
 var herokuConnection = new heroku({ token: token });
 
-setTimeout(() => {
-  herokuConnection.delete('/apps/' + appName + '/dynos/').then( x => console.log(x) );
-}, 10000)
-
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -448,6 +444,11 @@ function logStats(addition){
   let inLobby = Object.keys(SOCKET_LIST).length - Object.keys(PLAYER_LIST).length
   let stats = '[R:' + Object.keys(ROOM_LIST).length + " P:" + Object.keys(PLAYER_LIST).length + " L:" + inLobby + "] "
   console.log(stats + addition)
+}
+
+// Restart Heroku Server
+function herokuRestart(){
+  herokuConnection.delete('/apps/' + appName + '/dynos/').then( x => console.log(x) );
 }
 
 // Every second, update the timer in the rooms that are on timed mode
